@@ -76,43 +76,72 @@ graph TD
 ```
 
 ## 3. Diagrama de Gantt
-
 ```mermaid
-%%{init: { 'gantt': { 'tickInterval': '2d' } } }%%
 gantt
-    title Cronograma LawnMowerBot (Robot Cortacésped) - 59 Días Totales
-    dateFormat YYYY-MM-DD
-    axisFormat %d-%b
-    tickInterval 2d
-
-    section Fase 1: Hardware
-    T1.1 - Diseño Chasis (Días 1-5)            :active, t1_1, 2026-06-03, 5d
-    T1.2 - Adquisición Sensores (Días 1-7)     :t1_2, 2026-06-03, 7d
-    T1.3 - Sistema de Potencia (Días 6-9)      :t1_3, after t1_1, 4d
-    T1.4 - Ensamblado Mecánico (Días 10-15)    :t1_4, after t1_3, 6d
+    dateFormat  YYYY-MM-DD
+    title Planificación del Proyecto - Limpia Piscina Autónomo
+gantt
+    dateFormat  YYYY-MM-DD
+    title Planificación del Proyecto - Limpia Piscina Autónomo
 
     section Fase 2: Bajo Nivel
-    T2.1 - Firmware Motores (Días 16-20)       :t2_1, after t1_4, 5d
-    T2.2 - Comunicación SBC-MCU (Días 21-24)   :t2_2, after t2_1, 4d
-    T2.3 - Teleoperación y Grabación (Días 25-27):t2_3, after t2_2, 3d
+    T2.1 - Firmware Motores (Días 16-20)           :t2_1, after t1_4, 5d
+    T2.2 - Comunicación SBC-MCU (Días 21-24)       :t2_2, after t2_1, 4d
+    T2.3 - Teleoperación y Grabación (Días 25-27)  :t2_3, after t2_2, 3d
 
     section Fase 3: ROS 2 / SLAM
-    T3.1 - OS y ROS2 en SBC (Días 8-9)         :t3_1, after t1_2, 2d
-    T3.2 - Integración LiDAR (Días 10-12)      :t3_2, after t3_1, 3d
-    T3.3 - Odometría y Mapeo SLAM (Días 25-30) :t3_3, after t2_2, 6d
-    T3.4 - Navegación y Playback (Días 31-38)  :t3_4, after t3_3, 8d
+    T3.1 - OS y ROS2 en SBC (Días 8-9)             :t3_1, after t1_2, 2d
+    T3.2 - Integración LiDAR (Días 10-12)          :t3_2, after t3_1, 3d
+    T3.3 - Odometría y Mapeo SLAM (Días 25-30)     :t3_3, after t2_2, 6d
+    T3.4 - Navegación y Playback (Días 31-38)      :t3_4, after t3_3, 8d
 
     section Fase 4: Visión (RGB)
-    T4.1 - Cámara y OpenCV (Días 10-11)        :t4_1, after t3_1, 2d
-    T4.2 - Modelo Detección (Días 12-18)       :t4_2, after t4_1, 7d
-    T4.3 - E-Stop y Evitación (Días 39-43)     :t4_3, after t3_4, 5d
+    T4.1 - Cámara y OpenCV (Días 10-11)            :t4_1, after t3_1, 2d
+    T4.2 - Modelo Detección (Días 12-18)           :t4_2, after t4_1, 7d
+    T4.3 - E-Stop y Evitación (Días 39-43)         :t4_3, after t3_4, 5d
 
     section Fase 5: Integración
-    T5.1 - Integración Software (Días 44-47)   :t5_1, after t4_3, 4d
-    T5.2 - Pruebas Controladas (Días 48-51)    :t5_2, after t5_1, 4d
-    T5.3 - Pruebas de Campo (Días 52-56)       :t5_3, after t5_2, 5d
-    T5.4 - Doc. y Cierre (Días 57-59)          :t5_4, after t5_3, 3d
-```
+    T5.1 - Integración Software (Días 44-47)       :t5_1, after t4_3, 4d
+    T5.2 - Pruebas Controladas (Días 48-51)        :t5_2, after t5_1, 4d
+    T5.3 - Pruebas de Campo (Días 52-56)           :t5_3, after t5_2, 5d
+    T5.4 - Doc. y Cierre (Días 57-59)              :t5_4, after t5_3, 3d
+## 4. Diagrama de Grafo (Red PERT)
+```mermaid
+graph TD
+    %% Fase 2 y 3 (Bajo Nivel y ROS2)
+    T1_2 --> T3_1["T3.1: OS y ROS2 en SBC"]
+    T1_4 --> T2_1["T2.1: Firmware Motores"]
+   
+    T3_1 --> T3_2["T3.2: Integración LiDAR"]
+    T3_1 --> T4_1["T4.1: Cámara y OpenCV"]
+   
+    T2_1 --> T2_2["T2.2: Comunicación SBC-MCU"]
+    T4_1 --> T4_2["T4.2: Modelo Detección"]
+   
+    T2_2 --> T2_3["T2.3: Teleoperación"]
+    T2_2 --> T3_3["T3.3: Odometría y Mapeo SLAM"]
+   
+    T3_3 --> T3_4["T3.4: Navegación y Playback"]
+   
+    %% Convergencia para Evitación e Integración
+    T3_4 --> T4_3["T4.3: E-Stop y Evitación"]
+    T4_2 --> T4_3
+   
+    T4_3 --> T5_1["T5.1: Integración Software"]
+    T5_1 --> T5_2["T5.2: Pruebas Controladas"]
+    T5_2 --> T5_3["T5.3: Pruebas de Campo"]
+    T5_3 --> T5_4["T5.4: Doc. y Cierre"]
+
+    style T2_1 fill:#f9f,stroke:#333,stroke-width:2px
+    style T2_2 fill:#f9f,stroke:#333,stroke-width:2px
+    style T3_3 fill:#f9f,stroke:#333,stroke-width:2px
+    style T3_4 fill:#f9f,stroke:#333,stroke-width:2px
+    style T4_3 fill:#f9f,stroke:#333,stroke-width:2px
+    style T5_1 fill:#f9f,stroke:#333,stroke-width:2px
+    style T5_2 fill:#f9f,stroke:#333,stroke-width:2px
+    style T5_3 fill:#f9f,stroke:#333,stroke-width:2px
+    style T5_4 fill:#f9f,stroke:#333,stroke-width:2px
+
 
 ## 4. Análisis del camino crítico
 
@@ -132,33 +161,40 @@ El camino crítico es la secuencia de tareas que determina la duración mínima 
 - T5.2: Pruebas Controladas
 - T5.3: Pruebas de Campo
 - T5.4: Documentación y Cierre
+## 4. Diagrama de Grafo (Red PERT)
+```mermaid
+graph TD
+    %% Fase 2 y 3 (Bajo Nivel y ROS2)
+    T1_2 --> T3_1["T3.1: OS y ROS2 en SBC"]
+    T1_4 --> T2_1["T2.1: Firmware Motores"]
+   
+    T3_1 --> T3_2["T3.2: Integración LiDAR"]
+    T3_1 --> T4_1["T4.1: Cámara y OpenCV"]
+   
+    T2_1 --> T2_2["T2.2: Comunicación SBC-MCU"]
+    T4_1 --> T4_2["T4.2: Modelo Detección"]
+   
+    T2_2 --> T2_3["T2.3: Teleoperación"]
+    T2_2 --> T3_3["T3.3: Odometría y Mapeo SLAM"]
+   
+    T3_3 --> T3_4["T3.4: Navegación y Playback"]
+   
+    %% Convergencia para Evitación e Integración
+    T3_4 --> T4_3["T4.3: E-Stop y Evitación"]
+    T4_2 --> T4_3
+   
+    T4_3 --> T5_1["T5.1: Integración Software"]
+    T5_1 --> T5_2["T5.2: Pruebas Controladas"]
+    T5_2 --> T5_3["T5.3: Pruebas de Campo"]
+    T5_3 --> T5_4["T5.4: Doc. y Cierre"]
 
-### Tabla de tiempos y holguras
+    style T2_1 fill:#f9f,stroke:#333,stroke-width:2px
+    style T2_2 fill:#f9f,stroke:#333,stroke-width:2px
+    style T3_3 fill:#f9f,stroke:#333,stroke-width:2px
+    style T3_4 fill:#f9f,stroke:#333,stroke-width:2px
+    style T4_3 fill:#f9f,stroke:#333,stroke-width:2px
+    style T5_1 fill:#f9f,stroke:#333,stroke-width:2px
+    style T5_2 fill:#f9f,stroke:#333,stroke-width:2px
+    style T5_3 fill:#f9f,stroke:#333,stroke-width:2px
+    style T5_4 fill:#f9f,stroke:#333,stroke-width:2px
 
-| Código | Tarea | Duración | Holgura | Crítico |
-|---|---|---|---|---|
-| T1.1 | Chasis y Motores | 5 | 0 | Sí |
-| T1.2 | Sensores y SBC | 7 | 2 | No |
-| T1.3 | Sistema de Potencia | 4 | 0 | Sí |
-| T1.4 | Ensamblado y Cableado | 6 | 0 | Sí |
-| T2.1 | Firmware Motores | 5 | 0 | Sí |
-| T2.2 | Comunicación SBC-MCU | 4 | 0 | Sí |
-| T2.3 | Teleoperación y Grabación | 3 | 3 | No |
-| T3.1 | Configuración ROS2 | 2 | 12 | No |
-| T3.2 | Integración LiDAR | 3 | 12 | No |
-| T3.3 | SLAM y Odometría | 6 | 0 | Sí |
-| T3.4 | Nav2 y Playback | 8 | 0 | Sí |
-| T4.1 | Cámara y OpenCV | 2 | 20 | No |
-| T4.2 | Modelo Detección | 7 | 20 | No |
-| T4.3 | E-Stop / Evitación | 5 | 0 | Sí |
-| T5.1 | Integración de Software | 4 | 0 | Sí |
-| T5.2 | Pruebas Controladas | 4 | 0 | Sí |
-| T5.3 | Pruebas de Campo | 5 | 0 | Sí |
-| T5.4 | Documentación y Cierre | 3 | 0 | Sí |
-
-## 5. Cómo usar esto en tu entrega
-
-- Si necesitas un documento de planificación, copia este archivo completo.
-- Si necesitas sólo el Gantt y el grafo, usa las secciones 2 y 3.
-- Si necesitas explicar el camino crítico, usa la sección 4.
-- Puedes pegar esto directamente en tu informe o presentación.
